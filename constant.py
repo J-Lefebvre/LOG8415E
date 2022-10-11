@@ -25,6 +25,7 @@ APPLICATION_LOAD_BALANCER="application"
 DEFAULT_IP_TYPE = "ipv4"
 
 DEFAULT_PORT = 80
+DEFAULT_PROTOCOL = 'HTTP'
 
 # Target Group
 TG_TARGET_TYPE = "instance"
@@ -33,3 +34,7 @@ TG_NAME_M4 = "TargetGroupM4"
 TG_PROTOCOL = "HTTP"
 TG_PROTOCOL_VERSION = "HTTP1"
 TG_VPC = "vpc-0a29f00e02dae6802"
+
+# Target groups Rules
+FORWARD_RULE = "forward"
+PATH_PATTERN_CONDITION = 'path-pattern'

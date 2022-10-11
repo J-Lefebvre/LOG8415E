@@ -56,7 +56,7 @@ class EC2Creator:
             MinCount=1
         )
         print(response["Instances"][0]["InstanceId"])
-        time.sleep(10)
+        time.sleep(5)
         return response["Instances"][0]["InstanceId"]
 
     def create_cluster_t2_large(self):
