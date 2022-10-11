@@ -61,8 +61,7 @@ class EC2Creator:
             self.create_instance(constant.US_EAST_1A, constant.T2_LARGE),
             self.create_instance(constant.US_EAST_1B, constant.T2_LARGE),
             self.create_instance(constant.US_EAST_1C, constant.T2_LARGE),
-            self.create_instance(constant.US_EAST_1D, constant.T2_LARGE),
-            self.create_instance(constant.US_EAST_1E, constant.T2_LARGE)
+            self.create_instance(constant.US_EAST_1D, constant.T2_LARGE)
         ]
 
     def create_cluster_m4_large(self):
@@ -70,17 +69,23 @@ class EC2Creator:
             self.create_instance(constant.US_EAST_1A, constant.M4_LARGE),
             self.create_instance(constant.US_EAST_1B, constant.M4_LARGE),
             self.create_instance(constant.US_EAST_1C, constant.M4_LARGE),
-            self.create_instance(constant.US_EAST_1D, constant.M4_LARGE),
-            self.create_instance(constant.US_EAST_1E, constant.M4_LARGE)
+            self.create_instance(constant.US_EAST_1D, constant.M4_LARGE)
         ]
 
     def create_clusters(self):
         self.create_cluster_t2_large()
         self.create_cluster_m4_large()
 
+    def terminate_instances(self):
+        self.client.terminate_instances(InstanceIds=self.cluster_t2_instances_ids)
+        self.client.terminate_instances(InstanceIds=self.cluster_m4_instances_ids)
+
 
 obj = EC2Creator()
 obj.create_clusters()
 
-print(obj.cluster_t2_instances_ids)
-print(obj.cluster_m4_instances_ids)
+time.sleep(1)
+# print(obj.cluster_t2_instances_ids)
+# print(obj.cluster_m4_instances_ids)
+
+obj.terminate_instances()
