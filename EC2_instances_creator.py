@@ -1,14 +1,16 @@
 import boto3
 import constant
+import time
+
 
 class EC2Creator:
     def __init__(self):
         self.client = boto3.client(
             'ec2',
             region_name="us-east-1",
-            aws_access_key_id="",
-            aws_secret_access_key="",
-            aws_session_token=""
+            aws_access_key_id="ASIAYZCTG2ALWHUZFK54",
+            aws_secret_access_key="C2RNAzD4FKUNNzYXYlCspmAbkTLZ1uiAychd5JcZ",
+            aws_session_token="FwoGZXIvYXdzEMP//////////wEaDP3leF14mDovpTXIxCLDAX52lezY4yeLYR/xp5mizNRQsw3jt1V0B/nLv73RgxFonmNYzPCGZQ5q2kbYztCiwabHJQY00GY9nZtqh3122HbodrE5gJJ/OHF6x2xboALFN5eNH1J0ZvmnaoIxkmNX9IeTRh7egr3E6OMcYod+Gs1l5+K+RWk511x/8X3zXivBGiFzZottb0cPf1eE/VSPNraf0t8NhBAfxYnYm1zfaIH/uAAWYOLUUzB9CDMwDe55K8Ic/L7F9hlKIuMYRYPVfiJQXii+15aaBjIt+EPWYeqsHbEBsImv+GgQObeq57U+LhCDqF7JM3ki3TWJmpzNDFRZO1MXpIiB"
         )
 
         self.cluster_t2_instances_ids = []
@@ -54,6 +56,7 @@ class EC2Creator:
             MinCount=1
         )
         print(response["Instances"][0]["InstanceId"])
+        time.sleep(10)
         return response["Instances"][0]["InstanceId"]
 
     def create_cluster_t2_large(self):
@@ -74,18 +77,14 @@ class EC2Creator:
 
     def create_clusters(self):
         self.create_cluster_t2_large()
+        time.sleep(20)
         self.create_cluster_m4_large()
+
+        return (
+            self.cluster_t2_instances_ids,
+            self.cluster_m4_instances_ids
+        )
 
     def terminate_instances(self):
         self.client.terminate_instances(InstanceIds=self.cluster_t2_instances_ids)
         self.client.terminate_instances(InstanceIds=self.cluster_m4_instances_ids)
-
-
-obj = EC2Creator()
-obj.create_clusters()
-
-time.sleep(1)
-# print(obj.cluster_t2_instances_ids)
-# print(obj.cluster_m4_instances_ids)
-
-obj.terminate_instances()

@@ -1,5 +1,7 @@
 import boto3
+from EC2_instances_creator import EC2Creator
 import constant
+import time
 
 
 class LoadBalancer:
@@ -14,7 +16,6 @@ class LoadBalancer:
         self.load_balancer = None
         self.target_group_t2 = None
         self.target_group_m4 = None
-
 
     def create_load_balancer(self):
         self.load_balancer = self.elb.create_load_balancer(
@@ -44,7 +45,7 @@ class LoadBalancer:
         )
 
     def create_target_groups(self):
-        self.target_group_t2 = obj.create_target_group(
+        self.target_group_t2 = self.create_target_group(
             target_type=constant.TG_TARGET_TYPE,
             name=constant.TG_NAME_T2,
             protocol=constant.TG_PROTOCOL,
@@ -53,7 +54,7 @@ class LoadBalancer:
             protocol_version=constant.TG_PROTOCOL_VERSION,
         )
 
-        self.target_group_m4 = obj.create_target_group(
+        self.target_group_m4 = self.create_target_group(
             target_type=constant.TG_TARGET_TYPE,
             name=constant.TG_NAME_M4,
             protocol=constant.TG_PROTOCOL,
@@ -62,6 +63,37 @@ class LoadBalancer:
             protocol_version=constant.TG_PROTOCOL_VERSION,
         )
 
+    def register_cluster(self, target_group, cluster_ids):
+        self.elb.register_targets(
+            TargetGroupArn=target_group.get('TargetGroups')[0].get('TargetGroupArn'),
+            # All the instances
+            Targets=
+            [
+                {
+                    'Id': cluster_id,
+                    'Port': constant.DEFAULT_PORT
+                }
+                for cluster_id in cluster_ids
+            ]
+        )
 
-obj = LoadBalancer()
-obj.create_target_groups()
+
+ec2 = EC2Creator()
+LB = LoadBalancer()
+
+print('Creating clusters...')
+t2_cluster, m4_cluster = ec2.create_clusters()
+print('Clusters created!')
+
+time.sleep(30)
+
+print('Creating target groups...')
+# create target groups
+LB.create_target_groups()
+print('Target groups created!')
+
+print('Registering targets...')
+# register targets
+LB.register_cluster(LB.target_group_t2, t2_cluster)
+LB.register_cluster(LB.target_group_m4, m4_cluster)
+print('target registration complete!')
