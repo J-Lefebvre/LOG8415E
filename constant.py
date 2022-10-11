@@ -23,3 +23,13 @@ US_EAST_1E_SUBNET = "subnet-0e9e265ae3c8afc71"
 APPLICATION_LOAD_BALANCER="application"
 
 DEFAULT_IP_TYPE = "ipv4"
+
+DEFAULT_PORT = 80
+
+# Target Group
+TG_TARGET_TYPE = "instance"
+TG_NAME_T2 = "TargetGroupT2"
+TG_NAME_M4 = "TargetGroupM4"
+TG_PROTOCOL = "HTTP"
+TG_PROTOCOL_VERSION = "HTTP1"
+TG_VPC = "vpc-0a29f00e02dae6802"
