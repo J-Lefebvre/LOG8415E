@@ -9,9 +9,9 @@ class LoadBalancer:
         self.elb = boto3.client(
             'elbv2',
             region_name="us-east-1",
-            aws_access_key_id="ASIAYZCTG2ALWHUZFK54",
-            aws_secret_access_key="C2RNAzD4FKUNNzYXYlCspmAbkTLZ1uiAychd5JcZ",
-            aws_session_token="FwoGZXIvYXdzEMP//////////wEaDP3leF14mDovpTXIxCLDAX52lezY4yeLYR/xp5mizNRQsw3jt1V0B/nLv73RgxFonmNYzPCGZQ5q2kbYztCiwabHJQY00GY9nZtqh3122HbodrE5gJJ/OHF6x2xboALFN5eNH1J0ZvmnaoIxkmNX9IeTRh7egr3E6OMcYod+Gs1l5+K+RWk511x/8X3zXivBGiFzZottb0cPf1eE/VSPNraf0t8NhBAfxYnYm1zfaIH/uAAWYOLUUzB9CDMwDe55K8Ic/L7F9hlKIuMYRYPVfiJQXii+15aaBjIt+EPWYeqsHbEBsImv+GgQObeq57U+LhCDqF7JM3ki3TWJmpzNDFRZO1MXpIiB"
+            aws_access_key_id="ASIAYZCTG2ALRBDSKIDM",
+            aws_secret_access_key="tkKjqtiCZ2ISj9RpahpeLBTOIP9m4kNxktV9rpxr",
+            aws_session_token="FwoGZXIvYXdzEMv//////////wEaDN4do23+2mlv5nZJjiLDATJO3/vmvRS5mIZ7F3O88CUI8+sxPaI2iqQciUEFzCjnIrts+SHofM5Xh7/dbSvX8Jtf7UHDk7uoYmAG+IKtDxWA6pIRtvTuDK5lxHvycACFNw4m7L5irU1OWcweHs+IvXB5atxbArUYnpsfOU4j0OFiyBddZToJFTArC0GJu8jaaZAVz/QKlg3LTuiJ1W+PfobUPYy3Si2tzP/wftS+7NOldcCb/5s3FfXfPt97nQRSAuBoRSi7IroCZPudgsM5Vcs9Gyjnr5iaBjIttZodnWHrAAn2/2Iv1o6qexB0rko6CeHeUJdWidENNYLE0hQc9w5uJ9Ls4BUq"
         )
         self.load_balancer = None
         self.target_group_t2 = None
@@ -60,8 +60,45 @@ class LoadBalancer:
             protocol=constant.TG_PROTOCOL,
             port=constant.DEFAULT_PORT,
             vpc=constant.TG_VPC,
-            protocol_version=constant.TG_PROTOCOL_VERSION,
+            protocol_version=constant.TG_PROTOCOL_VERSION
         )
+
+    def register_target_group(self, listener, target_group, route, priority):
+        self.elb.create_rule(
+            ListenerArn=listener.get('Listeners')[0].get('ListenerArn'),
+            Actions=[
+                    {
+                        'TargetGroupArn': target_group.get('TargetGroups')[0].get('TargetGroupArn'),
+                        'Type': 'forward'
+                    },
+            ],
+            Conditions=[
+                {
+                    'Field': constant.PATH_PATTERN_CONDITION,
+                    'Values': [route]
+                },
+            ],
+            Priority=priority
+        )
+
+    def register_target_groups(self):
+        listener = self.elb.create_listener(
+            LoadBalancerArn=self.load_balancer.get('LoadBalancers')[0].get('LoadBalancerArn'),
+            Port=constant.DEFAULT_PORT,
+            Protocol=constant.DEFAULT_PROTOCOL,
+            DefaultActions=[
+                {
+                    # default route is mandatory. '/' will be redirected to T2.large cluster.
+                    'TargetGroupArn': self.target_group_t2.get('TargetGroups')[0].get('TargetGroupArn'),
+                    'Type': constant.FORWARD_RULE,
+                    'Order': 1
+                }
+            ]
+        )
+
+        # registering our custom routes
+        self.register_target_group(listener, target_group=self.target_group_t2, route='/cluster1', priority=1)
+        self.register_target_group(listener, target_group=self.target_group_m4, route='/cluster2', priority=2)
 
     def register_cluster(self, target_group, cluster_ids):
         self.elb.register_targets(
@@ -76,24 +113,3 @@ class LoadBalancer:
                 for cluster_id in cluster_ids
             ]
         )
-
-
-ec2 = EC2Creator()
-LB = LoadBalancer()
-
-print('Creating clusters...')
-t2_cluster, m4_cluster = ec2.create_clusters()
-print('Clusters created!')
-
-time.sleep(30)
-
-print('Creating target groups...')
-# create target groups
-LB.create_target_groups()
-print('Target groups created!')
-
-print('Registering targets...')
-# register targets
-LB.register_cluster(LB.target_group_t2, t2_cluster)
-LB.register_cluster(LB.target_group_m4, m4_cluster)
-print('target registration complete!')
