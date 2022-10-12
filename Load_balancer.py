@@ -6,16 +6,15 @@ import time
 
 class LoadBalancer:
     def __init__(self):
-        self.elb = boto3.client(
-            'elbv2',
-            region_name="us-east-1",
-            aws_access_key_id="ASIAYZCTG2ALRBDSKIDM",
-            aws_secret_access_key="tkKjqtiCZ2ISj9RpahpeLBTOIP9m4kNxktV9rpxr",
-            aws_session_token="FwoGZXIvYXdzEMv//////////wEaDN4do23+2mlv5nZJjiLDATJO3/vmvRS5mIZ7F3O88CUI8+sxPaI2iqQciUEFzCjnIrts+SHofM5Xh7/dbSvX8Jtf7UHDk7uoYmAG+IKtDxWA6pIRtvTuDK5lxHvycACFNw4m7L5irU1OWcweHs+IvXB5atxbArUYnpsfOU4j0OFiyBddZToJFTArC0GJu8jaaZAVz/QKlg3LTuiJ1W+PfobUPYy3Si2tzP/wftS+7NOldcCb/5s3FfXfPt97nQRSAuBoRSi7IroCZPudgsM5Vcs9Gyjnr5iaBjIttZodnWHrAAn2/2Iv1o6qexB0rko6CeHeUJdWidENNYLE0hQc9w5uJ9Ls4BUq"
-        )
+        self.elb = boto3.client('elbv2')
         self.load_balancer = None
         self.target_group_t2 = None
         self.target_group_m4 = None
+
+    def get_subnet_id(self, availability_zone):
+        ec2 = boto3.resource('ec2')
+        subnets = list(ec2.subnets.all())
+        return [x for x in subnets if x.availability_zone == availability_zone][0].id
 
     def create_load_balancer(self):
         self.load_balancer = self.elb.create_load_balancer(
@@ -23,16 +22,18 @@ class LoadBalancer:
             Name='DefaultLoadBalancer',
             IpAddressType=constant.DEFAULT_IP_TYPE,
             Subnets=[
-                constant.US_EAST_1A_SUBNET,
-                constant.US_EAST_1B_SUBNET,
-                constant.US_EAST_1C_SUBNET,
-                constant.US_EAST_1D_SUBNET,
-            ],
-            SecurityGroups=[
-                constant.DEFAULT_SECURITY_GROUP_ID,
+                self.get_subnet_id(constant.US_EAST_1A),
+                self.get_subnet_id(constant.US_EAST_1B),
+                self.get_subnet_id(constant.US_EAST_1C),
+                self.get_subnet_id(constant.US_EAST_1D),
             ],
         )
         print(self.load_balancer.get('LoadBalancers')[0].get('DNSName'))
+
+    def get_vpc(self):
+        ec2 = boto3.resource('ec2')
+        vpcs = list(ec2.vpcs.all())
+        return vpcs[0].id
 
     def create_target_group(self, target_type, name, protocol, port, vpc, protocol_version):
         return self.elb.create_target_group(
@@ -50,7 +51,7 @@ class LoadBalancer:
             name=constant.TG_NAME_T2,
             protocol=constant.TG_PROTOCOL,
             port=constant.DEFAULT_PORT,
-            vpc=constant.TG_VPC,
+            vpc=self.get_vpc(),
             protocol_version=constant.TG_PROTOCOL_VERSION,
         )
 
@@ -59,7 +60,7 @@ class LoadBalancer:
             name=constant.TG_NAME_M4,
             protocol=constant.TG_PROTOCOL,
             port=constant.DEFAULT_PORT,
-            vpc=constant.TG_VPC,
+            vpc=self.get_vpc(),
             protocol_version=constant.TG_PROTOCOL_VERSION
         )
 

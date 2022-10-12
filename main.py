@@ -10,7 +10,7 @@ print('Creating clusters...')
 t2_cluster, m4_cluster = ec2.create_clusters()
 print('Clusters created!')
 
-time.sleep(30)
+time.sleep(60)
 
 # create load balancer
 print('Creating load balancer...')
