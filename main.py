@@ -1,7 +1,7 @@
 from EC2_instances_creator import EC2Creator
 from Load_balancer import LoadBalancer
 import time
-
+import os
 
 ec2 = EC2Creator()
 LB = LoadBalancer()
@@ -31,3 +31,9 @@ print('Instances registration complete!')
 print('Registering target groups to load balancer...')
 LB.register_target_groups()
 print('Target groups registration complete!')
+
+# Send GET requests to EC2 instances
+print("Sending get requests to instances")
+os.system("docker build -t tp1/send_requests .")
+os.system("docker run tp1/send_requests:latest")
+print("Requests sent")
