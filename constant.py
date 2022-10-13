@@ -27,8 +27,9 @@ TG_PROTOCOL_VERSION = "HTTP1"
 FORWARD_RULE = "forward"
 PATH_PATTERN_CONDITION = 'path-pattern'
 
-# Load balancer dns address save location
-LB_ADDRESS_PATH = "lb_address.txt"
+# Load balancer 
+LB_NAME = "DefaultLoadBalancer"
+LB_ADDRESS_PATH = "DefaultLoadBalancer-855919930.us-east-1.elb.amazonaws.com" # dns address save location
 
 # Port configuration
 DEFAULT_SECURITY_GROUP_NAME = "default"
