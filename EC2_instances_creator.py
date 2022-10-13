@@ -6,6 +6,7 @@ import time
 class EC2Creator:
     def __init__(self):
         self.client = boto3.client('ec2')
+        self.open_http_port()
         self.cluster_t2_instances_ids = []
         self.cluster_m4_instances_ids = []
 
@@ -80,3 +81,16 @@ class EC2Creator:
     def terminate_instances(self):
         self.client.terminate_instances(InstanceIds=self.cluster_t2_instances_ids)
         self.client.terminate_instances(InstanceIds=self.cluster_m4_instances_ids)
+
+    def open_http_port(self):
+        opened_ports = [i_protocol.get('FromPort') for i_protocol in
+                        self.client.describe_security_groups(GroupNames=[constant.DEFAULT_SECURITY_GROUP_NAME])
+                        ['SecurityGroups'][0]['IpPermissions']]
+        if constant.HTTP_PORT not in opened_ports:
+            self.client.authorize_security_group_ingress(
+                GroupName=constant.DEFAULT_SECURITY_GROUP_NAME,
+                CidrIp=constant.CIDR_IP,
+                FromPort=constant.HTTP_PORT,
+                ToPort=constant.HTTP_PORT,
+                IpProtocol=constant.IP_PROTOCOL
+            )

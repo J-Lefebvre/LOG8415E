@@ -29,3 +29,9 @@ PATH_PATTERN_CONDITION = 'path-pattern'
 
 # Load balancer dns address save location
 LB_ADDRESS_PATH = "lb_address.txt"
+
+# Port configuration
+DEFAULT_SECURITY_GROUP_NAME = "default"
+CIDR_IP = "0.0.0.0/0"
+HTTP_PORT = 80
+IP_PROTOCOL = "tcp"
