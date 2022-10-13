@@ -5,7 +5,7 @@ import threading
 
 
 def send_GET_request(cluster_route):
-    elb_dns = constant.LB_ADDRESS_PATH
+    elb_dns = open(constant.LB_ADDRESS_PATH).readlines()
     url = f'http://{elb_dns}/{cluster_route}'
     response = requests.get(url)
 
