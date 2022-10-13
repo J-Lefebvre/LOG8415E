@@ -28,7 +28,10 @@ class LoadBalancer:
                 self.get_subnet_id(constant.US_EAST_1D),
             ],
         )
-        print(self.load_balancer.get('LoadBalancers')[0].get('DNSName'))
+        lb_address = self.load_balancer.get('LoadBalancers')[0].get('DNSName')
+        print(lb_address)
+        with open(constant.LB_ADDRESS_PATH, 'w') as f:
+            f.write(lb_address)
 
     def get_vpc(self):
         ec2 = boto3.resource('ec2')
