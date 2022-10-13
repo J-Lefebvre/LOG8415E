@@ -42,7 +42,10 @@ class EC2Creator:
 
             # One instance
             MaxCount=1,
-            MinCount=1
+            MinCount=1,
+
+            # Script to launch on instance startup
+            UserData=open('launch_script.sh').read()
         )
         print(response["Instances"][0]["InstanceId"])
         time.sleep(5)
