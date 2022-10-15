@@ -19,6 +19,7 @@ class MetricGenerator:
         self.cluster_m4_instances_ids = cluster_m4_instances_ids
         #list of chosen metrics 
         self.metrics_target_group = ['UnHealthyHostCount', 'HealthyHostCount', 'TargetResponseTime', 'RequestCount', 'HTTPCode_Target_4XX_Count', 'HTTPCode_Target_2XX_Count', 'RequestCountPerTarget']
+        self.metrics_load_balancer = ['TargetResponseTime', 'RequestCount', 'HTTPCode_ELB_5XX_Count', 'HTTPCode_ELB_503_Count', 'HTTPCode_Target_2XX_Count', 'ActiveConnectionCount', 'NewConnectionCount', 'ProcessedBytes', 'ConsumedLCUs']
         self.metrics_instances = ['CPUUtilization']
 
 
@@ -37,7 +38,7 @@ class MetricGenerator:
                         'Value': instance_id
                     }
                 ],
-                StartTime=datetime.utcnow() - timedelta(minutes=10),
+                StartTime=datetime.utcnow() - timedelta(minutes=20),
                 EndTime=datetime.utcnow(),
                 Period=60,
                 Statistics=['Minimum', 'Maximum', 'Average']
@@ -46,29 +47,24 @@ class MetricGenerator:
         return statistics
 
 
-    def build_target_group_metric_queries(self, cluster_id, cluster_type):
+    def build_target_group_metric_queries(self, metric_queries, name, value, cluster_type):
         """Build the queries to specify which target group metric data to retrieve. """
-
-        metric_queries = []
-        for metric in self.metrics_target_group:
+        metrics = self.metrics_target_group if name == 'TargetGroup' else self.metrics_load_balancer
+        for metric in metrics:
             metric_queries.append({
-                    'Id': metric.lower() + 'TargetGroup' + cluster_type,
+                    'Id': metric.lower() + '_' + name + '_' + cluster_type,
                     'MetricStat': {
                         'Metric': {
                             'Namespace': 'AWS/ApplicationELB',
                             'MetricName': metric,
                             "Dimensions": [
                             {
-                                'Name': 'TargetGroup',
-                                'Value': cluster_id
+                                'Name': name,
+                                'Value': value
                             },
-                            {
-                                'Name': 'LoadBalancer',
-                                'Value': self.elb_id
-                            }
                             ],
                         },
-                        'Period': 60*60, # Change this 
+                        'Period': 60,
                         'Stat': 'Sum',
                     }
                 })
@@ -79,12 +75,13 @@ class MetricGenerator:
     # To get metrics from clusters
     def get_target_group_metric_data(self, cluster_id, cluster_type):
         """Retrieve datapoints for each chosen metric. """
-
-        metric_query = self.build_target_group_metric_queries(cluster_id, cluster_type)
+        metric_queries = []
+        metric_queries = self.build_target_group_metric_queries(metric_queries, 'TargetGroup', cluster_id, cluster_type)
+        metric_queries = self.build_target_group_metric_queries(metric_queries, 'LoadBalancer', self.elb_id, cluster_type)
 
         response = self.cloudwatch.get_metric_data(
-            MetricDataQueries=metric_query,
-            StartTime=datetime.utcnow() - timedelta(days=1),
+            MetricDataQueries=metric_queries,
+            StartTime=datetime.utcnow() - timedelta(minutes=60),
             EndTime=datetime.utcnow()
         )
 
@@ -103,9 +100,9 @@ class MetricGenerator:
             data2_dict = data_cluster_m4[i] 
             
             # retrieving the metrics label
-            metrics_label = data1_dict.get('Label')
+            metrics_label = data1_dict.get('Label').split()[1]
 
-            # Convert dictionnary data into pandas
+            # Convert dictionary data into pandas
             df_1 = pd.DataFrame.from_dict(data1_dict)[["Timestamps","Values"]]
             df_1.rename(columns={'Values': 'ClusterT2'}, inplace=True)
             df_2 = pd.DataFrame.from_dict(data2_dict)[["Timestamps","Values"]]
@@ -127,7 +124,7 @@ class MetricGenerator:
             # Create plot
             if len(df_1)!=0 and len(df_2)!=0:
 
-                print("drawing plot...")
+                print(f"drawing plot {metrics_label}")
                 plt.xlabel("Timestamps")
                 plt.plot("Timestamps", "ClusterT2", color="red", data=df_1)
                 plt.plot("Timestamps", "ClusterM4", color="blue", data=df_2)
@@ -141,7 +138,6 @@ class MetricGenerator:
     def prepare_results(self):
         """Retrieve metrics and report the performance by generating plots and showing statistics."""
 
-
         print("retrieving metrics...")
         # Retrieve datapoints of each chosen metric collected from cluster t2
         data_cluster_t2 = self.get_target_group_metric_data(self.cluster_t2_id, 't2')
@@ -149,12 +145,14 @@ class MetricGenerator:
         # Retrieve datapoints of each chosen metric collected from cluster m4
         data_cluster_m4 = self.get_target_group_metric_data(self.cluster_m4_id, 'm4')
 
-
         for i in range(len(data_cluster_t2)):
             print(data_cluster_t2[i])
 
+        for i in range(len(data_cluster_m4)):
+            print(data_cluster_m4[i])
+
         # Generate plots for clusters comparison
-        #self.generate_plots(data_cluster_t2, data_cluster_m4)
+        self.generate_plots(data_cluster_t2, data_cluster_m4)
 
         # # Retrieve statistics of each chosen metric collected from ec2 instances of cluster t2
         # for instance_id in self.cluster_t2_instances_ids:
@@ -180,11 +178,11 @@ class MetricGenerator:
 if __name__ == "__main__":
 
     # Change these 
-    elb_id = "loadbalancer/app/DefaultLoadBalancer/bc8ed79f8b2c7123"
-    cluster_t2_id = "targetgroup/TargetGroupT2/29193be0de6520ed"
-    cluster_m4_id = "targetgroup/TargetGroupM4/4b77f266ca9096e4"
-    cluster_t2_instances_ids = ["i-005fc8712ccfa4760", "i-00f053ab864ea395e", "i-0894703fdd5ac22c7", "i-001aa8c0205a9d15a"]
-    cluster_m4_instances_ids = ["i-0d22aaea47f5f86ea", "i-043a11ee58a826934", "i-06c46d97e5747a961", "i-0311a508edcf4dd9c"]
+    elb_id = "loadbalancer/app/DefaultLoadBalancer/284f30d4d7d8a819"
+    cluster_t2_id = "targetgroup/TargetGroupT2/571b024244318026"
+    cluster_m4_id = "targetgroup/TargetGroupM4/146e9c3c0f032c09"
+    cluster_t2_instances_ids = ["i-0e93be0ad27fe45f1", "i-0b0cfad406d037c3e", "i-0db6614f2df44359f", "i-0833d1be25f9343aa"]
+    cluster_m4_instances_ids = ["i-001ac0b16ded4a723", "i-0af8fef3260de8e29", "i-016102b3f58d025f0", "i-0a9c919e460d88420"]
 
     metricGenerator = MetricGenerator(
         elb_id = elb_id,
