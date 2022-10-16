@@ -54,18 +54,18 @@ class EC2Creator:
 
     def create_cluster_t2_large(self):
         self.cluster_t2_instances_ids = [
-            self.create_instance(constant.US_EAST_1A, 't2.micro'),
-            self.create_instance(constant.US_EAST_1B, 't2.micro'),
-            self.create_instance(constant.US_EAST_1C, 't2.micro'),
-            self.create_instance(constant.US_EAST_1D, 't2.micro')
+            self.create_instance(constant.US_EAST_1A, constant.T2_LARGE),
+            self.create_instance(constant.US_EAST_1B, constant.T2_LARGE),
+            self.create_instance(constant.US_EAST_1C, constant.T2_LARGE),
+            self.create_instance(constant.US_EAST_1D, constant.T2_LARGE)
         ]
 
     def create_cluster_m4_large(self):
         self.cluster_m4_instances_ids = [
-            self.create_instance(constant.US_EAST_1A, 't2.micro'),
-            self.create_instance(constant.US_EAST_1B, 't2.micro'),
-            self.create_instance(constant.US_EAST_1C, 't2.micro'),
-            self.create_instance(constant.US_EAST_1D, 't2.micro')
+            self.create_instance(constant.US_EAST_1A, constant.M4_LARGE),
+            self.create_instance(constant.US_EAST_1B, constant.M4_LARGE),
+            self.create_instance(constant.US_EAST_1C, constant.M4_LARGE),
+            self.create_instance(constant.US_EAST_1D, constant.M4_LARGE)
         ]
 
     def create_clusters(self):
