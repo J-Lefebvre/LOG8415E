@@ -32,6 +32,10 @@ print('Registering target groups to load balancer...')
 LB.register_target_groups()
 print('Target groups registration complete!')
 
+print('Waiting 180 seconds before sending GET requests..')
+
+time.sleep(180)
+
 # Send GET requests to EC2 instances
 print("Sending get requests to instances")
 os.system("docker build -t tp1/send_requests .")
