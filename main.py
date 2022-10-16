@@ -10,6 +10,7 @@ print('Creating clusters...')
 t2_cluster, m4_cluster = ec2.create_clusters()
 print('Clusters created!')
 
+print('waiting 60 seconds before creating the load balancer.')
 time.sleep(60)
 
 # create load balancer
@@ -34,7 +35,7 @@ print('Target groups registration complete!')
 
 print('Waiting 180 seconds before sending GET requests..')
 
-time.sleep(180)
+time.sleep(240)
 
 # Send GET requests to EC2 instances
 print("Sending get requests to instances")
