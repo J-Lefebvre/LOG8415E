@@ -16,7 +16,7 @@ def send_GET_request(url):
 def run_test_scenario_1(url_cluster_1, url_cluster_2):
     print("Thread 1 start")
 
-    for _ in range(10):
+    for _ in range(1000):
         send_GET_request(url_cluster_1)
         send_GET_request(url_cluster_2)
 
@@ -25,14 +25,14 @@ def run_test_scenario_1(url_cluster_1, url_cluster_2):
 
 def run_test_scenario_2(url_cluster_1, url_cluster_2):
     print("Thread 2 start")
-    for _ in range(5):
+    for _ in range(500):
         send_GET_request(url_cluster_1)
         send_GET_request(url_cluster_2)
 
     print("Thread 2: 60 sec timeout")
-    #time.sleep(60)
+    time.sleep(60)
 
-    for _ in range(10):
+    for _ in range(1000):
         send_GET_request(url_cluster_1)
         send_GET_request(url_cluster_2)
 

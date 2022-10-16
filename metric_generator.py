@@ -38,7 +38,7 @@ class MetricGenerator:
                         'Value': instance_id
                     }
                 ],
-                StartTime=datetime.utcnow() - timedelta(minutes=20),
+                StartTime=datetime.utcnow() - timedelta(minutes=60),
                 EndTime=datetime.utcnow(),
                 Period=60,
                 Statistics=['Minimum', 'Maximum', 'Average']
@@ -66,6 +66,7 @@ class MetricGenerator:
                         },
                         'Period': 60,
                         'Stat': 'Sum',
+                        'Unit': 'Count'
                     }
                 })
             
@@ -142,54 +143,27 @@ class MetricGenerator:
         # Retrieve datapoints of each chosen metric collected from cluster t2
         data_cluster_t2 = self.get_target_group_metric_data(self.cluster_t2_id, 't2')
 
-        # Retrieve datapoints of each chosen metric collected from cluster m4
+        #Retrieve datapoints of each chosen metric collected from cluster m4
         data_cluster_m4 = self.get_target_group_metric_data(self.cluster_m4_id, 'm4')
-
-        for i in range(len(data_cluster_t2)):
-            print(data_cluster_t2[i])
-
-        for i in range(len(data_cluster_m4)):
-            print(data_cluster_m4[i])
 
         # Generate plots for clusters comparison
         self.generate_plots(data_cluster_t2, data_cluster_m4)
 
         # # Retrieve statistics of each chosen metric collected from ec2 instances of cluster t2
-        # for instance_id in self.cluster_t2_instances_ids:
-        #     statistics = self.get_instances_metric_statistics(instance_id)
+        for instance_id in self.cluster_t2_instances_ids:
+            statistics = self.get_instances_metric_statistics(instance_id)
 
-        #     print(f"CPU Utilization of instance {instance_id} in cluster t2")
-        #     print(f"Minimum: {statistics['Datapoints'][0]['Minimum']}%")
-        #     print(f"Maximum: {statistics['Datapoints'][0]['Maximum']}%")
-        #     print(f"Average: {statistics['Datapoints'][0]['Average']}%\n")
+            print(f"CPU Utilization of instance {instance_id} in cluster t2")
+            print(f"Minimum: {statistics['Datapoints'][0]['Minimum']}")
+            print(f"Maximum: {statistics['Datapoints'][0]['Maximum']}")
+            print(f"Average: {statistics['Datapoints'][0]['Average']}\n")
 
         
-        # # Retrieve statistics of each chosen metric collected from ec2 instances of cluster m4
-        # for instance_id in self.cluster_m4_instances_ids:
-        #     statistics = self.get_instances_metric_statistics(instance_id)
+        # Retrieve statistics of each chosen metric collected from ec2 instances of cluster m4
+        for instance_id in self.cluster_m4_instances_ids:
+            statistics = self.get_instances_metric_statistics(instance_id)
 
-        #     print(f"CPU Utilization of instance {instance_id} in cluster m4")
-        #     print(f"Minimum: {statistics['Datapoints'][0]['Minimum']}%")
-        #     print(f"Maximum: {statistics['Datapoints'][0]['Maximum']}%")
-        #     print(f"Average: {statistics['Datapoints'][0]['Average']}%\n")
-
-
-# For testing purposes 
-if __name__ == "__main__":
-
-    # Change these 
-    elb_id = "loadbalancer/app/DefaultLoadBalancer/284f30d4d7d8a819"
-    cluster_t2_id = "targetgroup/TargetGroupT2/571b024244318026"
-    cluster_m4_id = "targetgroup/TargetGroupM4/146e9c3c0f032c09"
-    cluster_t2_instances_ids = ["i-0e93be0ad27fe45f1", "i-0b0cfad406d037c3e", "i-0db6614f2df44359f", "i-0833d1be25f9343aa"]
-    cluster_m4_instances_ids = ["i-001ac0b16ded4a723", "i-0af8fef3260de8e29", "i-016102b3f58d025f0", "i-0a9c919e460d88420"]
-
-    metricGenerator = MetricGenerator(
-        elb_id = elb_id,
-        cluster_t2_id=cluster_t2_id,
-        cluster_m4_id=cluster_m4_id,
-        cluster_t2_instances_ids=cluster_t2_instances_ids,
-        cluster_m4_instances_ids=cluster_m4_instances_ids
-    )
-
-    metricGenerator.prepare_results()
+            print(f"CPU Utilization of instance {instance_id} in cluster m4")
+            print(f"Minimum: {statistics['Datapoints'][0]['Minimum']}")
+            print(f"Maximum: {statistics['Datapoints'][0]['Maximum']}")
+            print(f"Average: {statistics['Datapoints'][0]['Average']}\n")

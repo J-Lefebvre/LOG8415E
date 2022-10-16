@@ -34,8 +34,8 @@ print('Registering target groups to load balancer...')
 LB.register_target_groups()
 print('Target groups registration complete!')
 
-print('Waiting 30 seconds before sending GET requests..')
-time.sleep(30)
+print('Waiting 180 seconds before sending GET requests..')
+time.sleep(240)
 
 # Send GET requests to EC2 instances
 print("Sending get requests to instances...")
@@ -48,20 +48,13 @@ print("Waiting 60 seconds for collection of CloudWatch metrics...")
 time.sleep(60)
 
 
-print(LB.load_balancer.get('LoadBalancers')[0].get('LoadBalancerArn').split(":")[5])
-print(LB.target_group_t2.get('TargetGroups')[0].get('TargetGroupArn').split(":")[5])
-print(LB.target_group_m4.get('TargetGroups')[0].get('TargetGroupArn').split(":")[5])
+# Retrieve metric results
+metricGenerator = MetricGenerator(
+        elb_id = LB.load_balancer.get('LoadBalancers')[0].get('LoadBalancerArn').split(":")[-1],
+        cluster_t2_id=LB.target_group_t2.get('TargetGroups')[0].get('TargetGroupArn').split(":")[-1],
+        cluster_m4_id=LB.target_group_m4.get('TargetGroups')[0].get('TargetGroupArn').split(":")[-1],
+        cluster_t2_instances_ids=ec2.cluster_t2_instances_ids,
+        cluster_m4_instances_ids=ec2.cluster_m4_instances_ids
+    )
 
-# Generate metric plots
-# metricGenerator = MetricGenerator(
-#         elb_id = LB.load_balancer.get('LoadBalancers')[0].get('LoadBalancerArn').split(":")[5], # target group id
-#         cluster_t2_id=LB.target_group_t2.get('TargetGroups')[0].get('TargetGroupArn').split(":")[5], # target group id
-#         cluster_m4_id=LB.target_group_m4.get('TargetGroups')[0].get('TargetGroupArn').split(":")[5], # target group id
-#         cluster_t2_instances_ids=ec2.cluster_t2_instances_ids,
-#         cluster_m4_instances_ids=ec2.cluster_m4_instances_ids
-#     )
-
-# metricGenerator.prepare_results()
-
-
-# # TODO: terminate instances, target groups, load_balancer
+metricGenerator.prepare_results()
