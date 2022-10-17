@@ -1,0 +1,76 @@
+[
+    {
+        "Namespace": "AWS/ApplicationELB",
+        "MetricName": "RequestCount",
+        "Dimensions": [
+            {
+                "Name": "TargetGroup",
+                "Value": "targetgroup/TargetGroupM4/e59beeea9f80d7de"
+            },
+            {
+                "Name": "LoadBalancer",
+                "Value": "app/DefaultLoadBalancer/3ccc6002e974c810"
+            }
+        ]
+    },
+    {
+        "Namespace": "AWS/ApplicationELB",
+        "MetricName": "RequestCount",
+        "Dimensions": [
+            {
+                "Name": "LoadBalancer",
+                "Value": "app/DefaultLoadBalancer/3ccc6002e974c810"
+            },
+            {
+                "Name": "AvailabilityZone",
+                "Value": "us-east-1c"
+            }
+        ]
+    },
+    {
+        "Namespace": "AWS/ApplicationELB",
+        "MetricName": "UnHealthyHostCount",
+        "Dimensions": [
+            {
+                "Name": "TargetGroup",
+                "Value": "targetgroup/TargetGroupM4/e59beeea9f80d7de"
+            },
+            {
+                "Name": "LoadBalancer",
+                "Value": "app/DefaultLoadBalancer/3ccc6002e974c810"
+            },
+            {
+                "Name": "AvailabilityZone",
+                "Value": "us-east-1b"
+            }
+        ]
+    },
+    {
+        "Namespace": "AWS/ApplicationELB",
+        "MetricName": "TargetResponseTime",
+        "Dimensions": [
+            {
+                "Name": "LoadBalancer",
+                "Value": "app/DefaultLoadBalancer/3ccc6002e974c810"
+            },
+            {
+                "Name": "AvailabilityZone",
+                "Value": "us-east-1d"
+            }
+        ]
+    },
+    {
+        "Namespace": "AWS/ApplicationELB",
+        "MetricName": "UnHealthyHostCount",
+        "Dimensions": [
+            {
+                "Name": "TargetGroup",
+                "Value": "targetgroup/TargetGroupT2/1a6bc739e878fe9c"
+            },
+            {
+                "Name": "LoadBalancer",
+                "Value": "app/DefaultLoadBalancer/3ccc6002e974c810"
+            }
+        ]
+    }
+]

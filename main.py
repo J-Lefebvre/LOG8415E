@@ -50,7 +50,7 @@ time.sleep(60)
 
 # Generate metric plots
 metricGenerator = MetricGenerator(
-        elb_id = LB.load_balancer.get('LoadBalancers')[0].get('LoadBalancerArn').split(":")[-1],
+        elb_id = LB.load_balancer.get('LoadBalancers')[0].get('LoadBalancerArn').split("/", 1)[1],
         cluster_t2_id=LB.target_group_t2.get('TargetGroups')[0].get('TargetGroupArn').split(":")[-1],
         cluster_m4_id=LB.target_group_m4.get('TargetGroups')[0].get('TargetGroupArn').split(":")[-1],
         cluster_t2_instances_ids=ec2.cluster_t2_instances_ids,
@@ -61,7 +61,7 @@ metricGenerator.prepare_results()
 
 
 # Terminate services
-ec2.terminate_instances()
-LB.delete_load_balancer()
-time.sleep(30)
-LB.delete_target_groups()
+# ec2.terminate_instances()
+# LB.delete_load_balancer()
+# time.sleep(30)
+# LB.delete_target_groups()
