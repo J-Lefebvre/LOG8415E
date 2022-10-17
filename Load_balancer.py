@@ -8,11 +8,13 @@ class LoadBalancer:
         self.target_group_t2 = None
         self.target_group_m4 = None
 
+    # Gets the subnet ids of the current deployment
     def get_subnet_id(self, availability_zone):
         ec2 = boto3.resource('ec2')
         subnets = list(ec2.subnets.all())
         return [x for x in subnets if x.availability_zone == availability_zone][0].id
 
+    # Creates a load balancer with different availability zones
     def create_load_balancer(self):
         self.load_balancer = self.elb.create_load_balancer(
             Type=constant.APPLICATION_LOAD_BALANCER,
@@ -30,11 +32,13 @@ class LoadBalancer:
         with open(constant.LB_ADDRESS_PATH, 'w') as f:
             f.write(lb_address)
 
+    # Gets the vpc of the current deployment
     def get_vpc(self):
         ec2 = boto3.resource('ec2')
         vpcs = list(ec2.vpcs.all())
         return vpcs[0].id
 
+    # Creates a target group that will be linked to a load balancer
     def create_target_group(self, target_type, name, protocol, port, vpc, protocol_version):
         return self.elb.create_target_group(
             TargetType=target_type,
@@ -45,6 +49,7 @@ class LoadBalancer:
             ProtocolVersion=protocol_version
         )
 
+    # Creates both target groups that will be used by the load balancers
     def create_target_groups(self):
         self.target_group_t2 = self.create_target_group(
             target_type=constant.TG_TARGET_TYPE,
@@ -64,6 +69,7 @@ class LoadBalancer:
             protocol_version=constant.TG_PROTOCOL_VERSION
         )
 
+    # Links a target group to a listener
     def register_target_group(self, listener, target_group, route, priority):
         self.elb.create_rule(
             ListenerArn=listener.get('Listeners')[0].get('ListenerArn'),
@@ -82,6 +88,7 @@ class LoadBalancer:
             Priority=priority
         )
 
+    # Links the both target groups to a listener to forward the routes to the right load balancers
     def register_target_groups(self):
         listener = self.elb.create_listener(
             LoadBalancerArn=self.load_balancer.get('LoadBalancers')[0].get('LoadBalancerArn'),
@@ -101,6 +108,7 @@ class LoadBalancer:
         self.register_target_group(listener, target_group=self.target_group_t2, route='/cluster1', priority=1)
         self.register_target_group(listener, target_group=self.target_group_m4, route='/cluster2', priority=2)
 
+    # Registers a cluster to a target group
     def register_cluster(self, target_group, cluster_ids):
         self.elb.register_targets(
             TargetGroupArn=target_group.get('TargetGroups')[0].get('TargetGroupArn'),
@@ -115,11 +123,11 @@ class LoadBalancer:
             ]
         )
         
+    # Cleanup
 
     def delete_load_balancer(self):
         self.elb.delete_load_balancer(LoadBalancerArn=self.load_balancer.get('LoadBalancers')[0].get('LoadBalancerArn'))
-        
-    
+
     def delete_target_groups(self):
         self.elb.delete_target_group(TargetGroupArn=self.target_group_t2.get('TargetGroups')[0].get('TargetGroupArn'))
         self.elb.delete_target_group(TargetGroupArn=self.target_group_m4.get('TargetGroups')[0].get('TargetGroupArn'))
