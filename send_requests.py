@@ -6,7 +6,10 @@ import socket
 import logging
 
 
+
 def send_GET_request(url):
+    """ Send GET request to specified url. """
+
     try:
         response = requests.get(url)
     except socket.gaierror:
@@ -15,6 +18,8 @@ def send_GET_request(url):
 
 
 def run_test_scenario_1(url_cluster_1, url_cluster_2):
+    """ Send 1000 requests to cluster 1 and cluster 2. """
+
     logging.info("Thread 1 start")
 
     for _ in range(1000):
@@ -25,6 +30,8 @@ def run_test_scenario_1(url_cluster_1, url_cluster_2):
 
 
 def run_test_scenario_2(url_cluster_1, url_cluster_2):
+    """ Send 500 requests to cluster 1 and cluster 2 followed by another 1000 requests. """
+
     logging.info("Thread 2 start")
     for _ in range(500):
         send_GET_request(url_cluster_1)
