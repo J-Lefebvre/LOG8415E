@@ -9,6 +9,7 @@ class MetricGenerator:
     """
 
     def __init__(self, elb_id, cluster_t2_id, cluster_m4_id, cluster_t2_instances_ids, cluster_m4_instances_ids):
+        """Initiate MetricGenerator and print ELB and Cluster IDs."""
         self.cloudwatch = boto3.client('cloudwatch')
         self.elb_id = elb_id
         self.cluster_t2_id = cluster_t2_id
@@ -23,12 +24,10 @@ class MetricGenerator:
         self.metrics_instances = ['CPUUtilization']
 
 
-    # To get metrics from instances
     def get_instances_metric_statistics(self, instance_id):
-        """Retrieve statistics for each chosen metric. """
+        """Retrieves statistics on EC2 instances based on metrics defined in metrics_instances. """
 
         for metric in self.metrics_instances:
-
             statistics = self.cloudwatch.get_metric_statistics(
                 Namespace='AWS/EC2',
                 MetricName=metric,
@@ -48,7 +47,7 @@ class MetricGenerator:
 
 
     def build_target_group_metric_queries(self, metric_queries, metrics):
-        """Build the queries to specify which target group metric data to retrieve. """
+        """Builds the queries to specify which target group metric data to retrieve. """
         for id, metric in enumerate(metrics):
             metric_queries.append({
                     'Id': f'metric_{id}',
@@ -62,9 +61,8 @@ class MetricGenerator:
         return metric_queries
 
 
-    # To get metrics from clusters
     def get_metric_data(self):
-        """Retrieve datapoints for each chosen metric. """
+        """Retrieve data for all available metrics """
         # Get all metrics that contain elb_id
         metrics_ELB = [m for m in self.cloudwatch.list_metrics()['Metrics'] if any(True for dim in m['Dimensions'] if self.elb_id in dim.values())]
 
@@ -78,21 +76,26 @@ class MetricGenerator:
         metrics = metrics_ELB + metrics_T2 + metrics_M4
         metrics = [i for n, i in enumerate(metrics) if i not in metrics[n + 1:]]
 
+        # Store the metrics retrieved above in a json file
         with open('json/list_metrics.json', 'w', encoding='utf-8') as f:
             json.dump(metrics, f, ensure_ascii=False, indent=4)
 
+        # Build the body of the queries
         metric_queries = []
         metric_queries = self.build_target_group_metric_queries(metric_queries, metrics)
 
+        # Store the queries in a json file
         with open('json/metric_queries.json', 'w', encoding='utf-8') as f:
             json.dump(metric_queries, f, ensure_ascii=False, indent=4)
 
+        # Retrieve data from CloudWatch
         response = self.cloudwatch.get_metric_data(
             MetricDataQueries=metric_queries,
             StartTime=datetime.utcnow() - timedelta(minutes=60),
             EndTime=datetime.utcnow()
         )
 
+        # Store the CloudWatch data
         with open('json/response.json', 'w', encoding='utf-8') as f:
             json.dump(response, f, ensure_ascii=False, indent=4, default=str)
 
