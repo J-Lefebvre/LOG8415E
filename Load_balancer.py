@@ -1,8 +1,5 @@
 import boto3
-from EC2_instances_creator import EC2Creator
 import constant
-import time
-
 
 class LoadBalancer:
     def __init__(self):
@@ -117,3 +114,12 @@ class LoadBalancer:
                 for cluster_id in cluster_ids
             ]
         )
+        
+
+    def delete_load_balancer(self):
+        self.elb.delete_load_balancer(LoadBalancerArn=self.load_balancer.get('LoadBalancers')[0].get('LoadBalancerArn'))
+        
+    
+    def delete_target_groups(self):
+        self.elb.delete_target_group(TargetGroupArn=self.target_group_t2.get('TargetGroups')[0].get('TargetGroupArn'))
+        self.elb.delete_target_group(TargetGroupArn=self.target_group_m4.get('TargetGroups')[0].get('TargetGroupArn'))

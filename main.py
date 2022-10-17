@@ -48,7 +48,7 @@ print("Waiting 60 seconds for collection of CloudWatch metrics...")
 time.sleep(60)
 
 
-# Retrieve metric results
+# Generate metric plots
 metricGenerator = MetricGenerator(
         elb_id = LB.load_balancer.get('LoadBalancers')[0].get('LoadBalancerArn').split(":")[-1],
         cluster_t2_id=LB.target_group_t2.get('TargetGroups')[0].get('TargetGroupArn').split(":")[-1],
@@ -58,3 +58,10 @@ metricGenerator = MetricGenerator(
     )
 
 metricGenerator.prepare_results()
+
+
+# Terminate services
+ec2.terminate_instances()
+LB.delete_load_balancer()
+time.sleep(30)
+LB.delete_target_groups()
