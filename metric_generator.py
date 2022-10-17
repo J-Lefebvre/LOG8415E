@@ -17,9 +17,27 @@ class MetricGenerator:
         self.cluster_m4_id = cluster_m4_id
         self.cluster_t2_instances_ids = cluster_t2_instances_ids
         self.cluster_m4_instances_ids = cluster_m4_instances_ids
-        #list of chosen metrics 
-        self.metrics_target_group = ['UnHealthyHostCount', 'HealthyHostCount', 'TargetResponseTime', 'RequestCount', 'HTTPCode_Target_4XX_Count', 'HTTPCode_Target_2XX_Count', 'RequestCountPerTarget']
-        self.metrics_load_balancer = ['TargetResponseTime', 'RequestCount', 'HTTPCode_ELB_5XX_Count', 'HTTPCode_ELB_503_Count', 'HTTPCode_Target_2XX_Count', 'ActiveConnectionCount', 'NewConnectionCount', 'ProcessedBytes', 'ConsumedLCUs']
+        #list of chosen metrics
+        self.metrics_target_group = [
+            {'name': 'UnHealthyHostCount', 'stat': 'Average'},
+            {'name': 'HealthyHostCount', 'stat': 'Average'},
+            {'name': 'TargetResponseTime', 'stat': 'Average'},
+            {'name': 'RequestCount', 'stat': 'Sum'},
+            {'name': 'HTTPCode_Target_4XX_Count', 'stat': 'Sum'},
+            {'name': 'HTTPCode_Target_2XX_Count', 'stat': 'Sum'},
+            {'name': 'RequestCountPerTarget', 'stat': 'Sum'}
+        ]
+        self.metrics_load_balancer = [
+            {'name': 'TargetResponseTime', 'stat': 'Average'},
+            {'name': 'RequestCount', 'stat': 'Sum'},
+            {'name': 'HTTPCode_ELB_5XX_Count', 'stat': 'Sum'},
+            {'name': 'HTTPCode_ELB_503_Count', 'stat': 'Sum'},
+            {'name': 'HTTPCode_Target_2XX_Count', 'stat': 'Sum'},
+            {'name': 'ActiveConnectionCount', 'stat': 'Sum'},
+            {'name': 'NewConnectionCount', 'stat': 'Sum'},
+            {'name': 'ProcessedBytes', 'stat': 'Sum'},
+            {'name': 'ConsumedLCUs', 'stat': 'Sum'}
+        ]
         self.metrics_instances = ['CPUUtilization']
 
 
@@ -52,11 +70,11 @@ class MetricGenerator:
         metrics = self.metrics_target_group if name == 'TargetGroup' else self.metrics_load_balancer
         for metric in metrics:
             metric_queries.append({
-                    'Id': metric.lower() + '_' + name + '_' + cluster_type,
+                    'Id': metric['name'].lower() + '_' + name + '_' + cluster_type,
                     'MetricStat': {
                         'Metric': {
                             'Namespace': 'AWS/ApplicationELB',
-                            'MetricName': metric,
+                        'MetricName': metric['name'],
                             "Dimensions": [
                             {
                                 'Name': name,
@@ -65,7 +83,7 @@ class MetricGenerator:
                             ],
                         },
                         'Period': 60,
-                        'Stat': 'Sum',
+                        'Stat': metric['stat'],
                         'Unit': 'Count'
                     }
                 })
