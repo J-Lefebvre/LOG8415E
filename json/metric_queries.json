@@ -1,0 +1,48 @@
+[
+    {
+        "Id": "metric_0",
+        "MetricStat": {
+            "Metric": {
+                "Namespace": "AWS/ApplicationELB",
+                "MetricName": "RequestCount",
+                "Dimensions": [
+                    {
+                        "Name": "TargetGroup",
+                        "Value": "targetgroup/TargetGroupM4/d9aa3727b63d0466"
+                    },
+                    {
+                        "Name": "LoadBalancer",
+                        "Value": "app/DefaultLoadBalancer/e75361713a3584b8"
+                    }
+                ]
+            },
+            "Period": 60,
+            "Stat": "Sum"
+        }
+    },
+    {
+        "Id": "metric_1",
+        "MetricStat": {
+            "Metric": {
+                "Namespace": "AWS/ApplicationELB",
+                "MetricName": "HTTPCode_Target_2XX_Count",
+                "Dimensions": [
+                    {
+                        "Name": "TargetGroup",
+                        "Value": "targetgroup/TargetGroupM4/d9aa3727b63d0466"
+                    },
+                    {
+                        "Name": "LoadBalancer",
+                        "Value": "app/DefaultLoadBalancer/e75361713a3584b8"
+                    },
+                    {
+                        "Name": "AvailabilityZone",
+                        "Value": "us-east-1d"
+                    }
+                ]
+            },
+            "Period": 60,
+            "Stat": "Sum"
+        }
+    }
+]
