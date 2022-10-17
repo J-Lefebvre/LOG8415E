@@ -1,6 +1,5 @@
 from datetime import datetime, timedelta
 import json
-import random
 import boto3
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -17,31 +16,10 @@ class MetricGenerator:
         self.cluster_t2_instances_ids = cluster_t2_instances_ids
         self.cluster_m4_instances_ids = cluster_m4_instances_ids
 
-        print(self.elb_id)
-        print(self.cluster_t2_id)
-        print(self.cluster_m4_id)
+        print(f'ELB ID : {self.elb_id}')
+        print(f'Cluster T2 ID : {self.cluster_t2_id}')
+        print(f'Cluster M4 ID : {self.cluster_m4_id}')
 
-        #list of chosen metrics
-        # self.metrics = [
-        #     {'name': 'UnHealthyHostCount', 'stat': 'Average'},
-        #     {'name': 'HealthyHostCount', 'stat': 'Average'},
-        #     {'name': 'TargetResponseTime', 'stat': 'Average'},
-        #     {'name': 'RequestCount', 'stat': 'Sum'},
-        #     {'name': 'HTTPCode_Target_4XX_Count', 'stat': 'Sum'},
-        #     {'name': 'HTTPCode_Target_2XX_Count', 'stat': 'Sum'},
-        #     {'name': 'RequestCountPerTarget', 'stat': 'Sum'},
-        # ]
-        # self.metrics_load_balancer = [
-        #     {'name': 'TargetResponseTime', 'stat': 'Average'},
-        #     {'name': 'RequestCount', 'stat': 'Sum'},
-        #     {'name': 'HTTPCode_ELB_5XX_Count', 'stat': 'Sum'},
-        #     {'name': 'HTTPCode_ELB_503_Count', 'stat': 'Sum'},
-        #     {'name': 'HTTPCode_Target_2XX_Count', 'stat': 'Sum'},
-        #     {'name': 'ActiveConnectionCount', 'stat': 'Sum'},
-        #     {'name': 'NewConnectionCount', 'stat': 'Sum'},
-        #     {'name': 'ProcessedBytes', 'stat': 'Sum'},
-        #     {'name': 'ConsumedLCUs', 'stat': 'Sum'}
-        # ]
         self.metrics_instances = ['CPUUtilization']
 
 
@@ -87,7 +65,19 @@ class MetricGenerator:
     # To get metrics from clusters
     def get_metric_data(self):
         """Retrieve datapoints for each chosen metric. """
-        metrics = [m for m in self.cloudwatch.list_metrics()['Metrics'] if (m['Namespace'] == 'AWS/ApplicationELB') if any(True for dim in m['Dimensions'] if elb_id in dim.values())]
+        # Get all metrics that contain elb_id
+        metrics_ELB = [m for m in self.cloudwatch.list_metrics()['Metrics'] if any(True for dim in m['Dimensions'] if self.elb_id in dim.values())]
+
+        # Get all metrics that contain cluster_t2_id
+        metrics_T2 = [m for m in self.cloudwatch.list_metrics()['Metrics'] if any(True for dim in m['Dimensions'] if self.cluster_t2_id in dim.values())]
+
+        # Get all metrics that contain cluster_m4_id
+        metrics_M4 = [m for m in self.cloudwatch.list_metrics()['Metrics'] if any(True for dim in m['Dimensions'] if self.cluster_m4_id in dim.values())]
+
+        # Combine metrics and remove duplicates
+        metrics = metrics_ELB + metrics_T2 + metrics_M4
+        metrics = [i for n, i in enumerate(metrics) if i not in metrics[n + 1:]]
+
         with open('list_metrics.json', 'w', encoding='utf-8') as f:
             json.dump(metrics, f, ensure_ascii=False, indent=4)
 
@@ -131,6 +121,7 @@ class MetricGenerator:
             # Create plot
             if len(df)!=0:
                 print(f"drawing plot {metric['Id']}")
+                plt.figure()
                 plt.xlabel("Timestamps")
                 plt.plot("Timestamps", "Cluster?", color="red", data=df)
                 plt.title(metric['Label'].split(' ')[-1])
@@ -168,23 +159,3 @@ class MetricGenerator:
             print(f"Minimum: {statistics['Datapoints'][0]['Minimum']}")
             print(f"Maximum: {statistics['Datapoints'][0]['Maximum']}")
             print(f"Average: {statistics['Datapoints'][0]['Average']}\n")
-
-# # For testing purposes 
-# if __name__ == "__main__":
-
-#     # Change these 
-#     elb_id = "app/DefaultLoadBalancer/3ccc6002e974c810"
-#     cluster_t2_id = "targetgroup/TargetGroupT2/1a6bc739e878fe9c"
-#     cluster_m4_id = "targetgroup/TargetGroupM4/e59beeea9f80d7de"
-#     cluster_t2_instances_ids = ["i-0c127ddaae6f87c45", "i-0bab82825ee2a16b1", "i-038ef7e92be866bad", "i-04a6ac98871978b9b"]
-#     cluster_m4_instances_ids = ["i-092bf41d4b5b39142", "i-0e810023460d7d567", "i-0c4b961ac7cd12dbf", "i-0a79569e39ea136e1"]
-
-#     metricGenerator = MetricGenerator(
-#         elb_id = elb_id,
-#         cluster_t2_id=cluster_t2_id,
-#         cluster_m4_id=cluster_m4_id,
-#         cluster_t2_instances_ids=cluster_t2_instances_ids,
-#         cluster_m4_instances_ids=cluster_m4_instances_ids
-#     )
-
-#     metricGenerator.prepare_results()
