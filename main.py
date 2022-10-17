@@ -50,7 +50,7 @@ time.sleep(60)
 
 # Generate metric plots
 metricGenerator = MetricGenerator(
-        elb_id = LB.load_balancer.get('LoadBalancers')[0].get('LoadBalancerArn').split(":")[-1],
+        elb_id = LB.load_balancer.get('LoadBalancers')[0].get('LoadBalancerArn').split("/", 1)[1],
         cluster_t2_id=LB.target_group_t2.get('TargetGroups')[0].get('TargetGroupArn').split(":")[-1],
         cluster_m4_id=LB.target_group_m4.get('TargetGroups')[0].get('TargetGroupArn').split(":")[-1],
         cluster_t2_instances_ids=ec2.cluster_t2_instances_ids,
