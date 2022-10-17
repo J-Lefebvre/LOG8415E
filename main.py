@@ -61,7 +61,7 @@ metricGenerator.prepare_results()
 
 
 # Terminate services
-# ec2.terminate_instances()
-# LB.delete_load_balancer()
-# time.sleep(30)
-# LB.delete_target_groups()
+ec2.terminate_instances()
+LB.delete_load_balancer()
+time.sleep(30)
+LB.delete_target_groups()

@@ -78,13 +78,13 @@ class MetricGenerator:
         metrics = metrics_ELB + metrics_T2 + metrics_M4
         metrics = [i for n, i in enumerate(metrics) if i not in metrics[n + 1:]]
 
-        with open('list_metrics.json', 'w', encoding='utf-8') as f:
+        with open('json/list_metrics.json', 'w', encoding='utf-8') as f:
             json.dump(metrics, f, ensure_ascii=False, indent=4)
 
         metric_queries = []
         metric_queries = self.build_target_group_metric_queries(metric_queries, metrics)
 
-        with open('metric_queries.json', 'w', encoding='utf-8') as f:
+        with open('json/metric_queries.json', 'w', encoding='utf-8') as f:
             json.dump(metric_queries, f, ensure_ascii=False, indent=4)
 
         response = self.cloudwatch.get_metric_data(
@@ -93,7 +93,7 @@ class MetricGenerator:
             EndTime=datetime.utcnow()
         )
 
-        with open('reponse.json', 'w', encoding='utf-8') as f:
+        with open('json/response.json', 'w', encoding='utf-8') as f:
             json.dump(response, f, ensure_ascii=False, indent=4, default=str)
 
         data_cluster = response["MetricDataResults"]
