@@ -3,43 +3,46 @@ import requests
 import time
 import threading
 import socket
+import logging
 
 
 def send_GET_request(url):
     try:
         response = requests.get(url)
     except socket.gaierror:
-        print("Failed to establish a new connection: [Errno -2] Name or service not known")
+        logging.info("Failed to establish a new connection: [Errno -2] Name or service not known")
     
 
 
 def run_test_scenario_1(url_cluster_1, url_cluster_2):
-    print("Thread 1 start")
+    logging.info("Thread 1 start")
 
     for _ in range(1000):
         send_GET_request(url_cluster_1)
         send_GET_request(url_cluster_2)
 
-    print("Thread 1 end")   
+    logging.info("Thread 1 end")   
 
 
 def run_test_scenario_2(url_cluster_1, url_cluster_2):
-    print("Thread 2 start")
+    logging.info("Thread 2 start")
     for _ in range(500):
         send_GET_request(url_cluster_1)
         send_GET_request(url_cluster_2)
 
-    print("Thread 2: 60 sec timeout")
+    logging.info("Thread 2: 60 sec timeout")
     time.sleep(60)
 
     for _ in range(1000):
         send_GET_request(url_cluster_1)
         send_GET_request(url_cluster_2)
 
-    print("Thread 2 end")
+    logging.info("Thread 2 end")
 
 
 if __name__ == "__main__":
+
+    logging.basicConfig(level=logging.INFO)
 
     # Fetch ELB dns address
     elb_dns = open(constant.LB_ADDRESS_PATH).readline()
