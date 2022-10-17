@@ -34,7 +34,7 @@ print('Registering target groups to load balancer...')
 LB.register_target_groups()
 print('Target groups registration complete!')
 
-print('Waiting 180 seconds before sending GET requests..')
+print('Waiting 240 seconds before sending GET requests..')
 time.sleep(240)
 
 # Send GET requests to EC2 instances
