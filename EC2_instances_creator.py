@@ -62,13 +62,14 @@ class EC2Creator:
             self.create_instance(constant.US_EAST_1D, constant.T2_LARGE)
         ]
 
-    # Sequence of requests that creates the 4 m4 instances
+    # Sequence of requests that creates the 5 m4 instances
     def create_cluster_m4_large(self):
         self.cluster_m4_instances_ids = [
             self.create_instance(constant.US_EAST_1A, constant.M4_LARGE),
             self.create_instance(constant.US_EAST_1B, constant.M4_LARGE),
             self.create_instance(constant.US_EAST_1C, constant.M4_LARGE),
-            self.create_instance(constant.US_EAST_1D, constant.M4_LARGE)
+            self.create_instance(constant.US_EAST_1D, constant.M4_LARGE),
+            self.create_instance(constant.US_EAST_1E, constant.M4_LARGE)
         ]
 
     # Main function that creates all the instances and retrieves their ids
