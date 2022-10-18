@@ -23,6 +23,24 @@ class MetricGenerator:
 
         self.metrics_instances = ['CPUUtilization']
 
+        # Correspondance between metric and the relevant stat [Average, Sum, Min, Max]
+        self.metrics_stat = {
+            'UnHealthyHostCount': 'Average',
+            'HealthyHostCount': 'Average',
+            'TargetResponseTime': 'Average',
+            'RequestCount': 'Sum',
+            'HTTPCode_Target_4XX_Count': 'Sum',
+            'HTTPCode_Target_2XX_Count': 'Sum',
+            'RequestCountPerTarget': 'Sum',
+            'HTTPCode_ELB_5XX_Count': 'Sum',
+            'HTTPCode_ELB_503_Count': 'Sum',
+            'HTTPCode_Target_2XX_Count': 'Sum',
+            'ActiveConnectionCount': 'Sum',
+            'NewConnectionCount': 'Sum',
+            'ProcessedBytes': 'Sum',
+            'ConsumedLCUs': 'Sum'
+        }
+
 
     def get_instances_metric_statistics(self, instance_id):
         """Retrieves statistics on EC2 instances based on metrics defined in metrics_instances. """
@@ -54,7 +72,7 @@ class MetricGenerator:
                     'MetricStat': {
                         'Metric': metric,
                         'Period': 60,
-                        'Stat': 'Sum' # TODO: change Stat according to the metric
+                        'Stat': self.metrics_stat[metric['MetricName']]
                     }
                 })
             
