@@ -58,8 +58,8 @@ class EC2Creator:
         return self.instance_id
 
     # Termination function that terminates the running instance
-    def terminate_instances(self):
-        self.client.terminate_instances(InstanceIds=self.instance_id)
+    def terminate_instance(self):
+        self.client.terminate_instances(InstanceIds=[self.instance_id])
 
     # If not done already, opens the port 80 on the default security group so that
     #  the ports of all instances and they are exposed by default on creation
