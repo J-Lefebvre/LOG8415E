@@ -45,3 +45,23 @@ echo "export YARN_NODEMANAGER_USER=\"root\""  >>  ~/.profile;
 
 source ~/.profile;
 
+$HADOOP_HOME/sbin/start-dfs.sh;
+
+
+hdfs dfs -mkdir -p input;
+
+apt install git -y;
+
+git clone https://github.com/miboz/files.git;
+
+hadoop com.sun.tools.javac.Main files/WordCount.java;
+
+cd files;
+
+jar cf wc.jar WordCount*.class;
+
+hadoop fs -cp ~/files/pg4300.txt ~/input;
+
+cd ~;
+
+hadoop jar files/wc.jar WordCount ./input/ ./output;
