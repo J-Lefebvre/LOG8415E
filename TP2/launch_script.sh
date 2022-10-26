@@ -31,3 +31,17 @@ service ssh restart;
 ssh-keygen -t rsa -P '' -f ~/.ssh/id_rsa;
 cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys;
 chmod 0600 ~/.ssh/authorized_keys;
+
+mkdir /var/lib/hadoop;
+chmod 777 /var/lib/hadoop;
+
+hdfs namenode -format;
+touch ~/start;
+echo "export HDFS_NAMENODE_USER=\"root\""  >>  ~/.profile;
+echo "export HDFS_DATANODE_USER=\"root\""  >>  ~/.profile;
+echo "export HDFS_SECONDARYNAMENODE_USER=\"root\""  >>  ~/.profile;
+echo "export YARN_RESOURCEMANAGER_USER=\"root\""  >>  ~/.profile;
+echo "export YARN_NODEMANAGER_USER=\"root\""  >>  ~/.profile;
+
+source ~/.profile;
+
