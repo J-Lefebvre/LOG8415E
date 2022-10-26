@@ -12,4 +12,4 @@ print("Waiting 60 seconds before continuing...")
 time.sleep(60)
 
 # Terminate services
-ec2.terminate_instance()
+# ec2.terminate_instance()
