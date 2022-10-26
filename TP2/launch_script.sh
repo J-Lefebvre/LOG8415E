@@ -23,3 +23,11 @@ head -n -4 $HADOOP_HOME/etc/hadoop/hdfs-site.xml > tmp.txt && mv tmp.txt $HADOOP
 
 echo "<configuration><property><name>hadoop.tmp.dir</name><value>/var/lib/hadoop</value></property></configuration>" >> $HADOOP_HOME/etc/hadoop/core-site.xml;
 echo "<configuration><property><name>dfs.replication</name><value>1</value></property></configuration>" >> $HADOOP_HOME/etc/hadoop/hdfs-site.xml
+
+apt install -y ssh;
+
+service ssh restart;
+
+ssh-keygen -t rsa -P '' -f ~/.ssh/id_rsa;
+cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys;
+chmod 0600 ~/.ssh/authorized_keys;
