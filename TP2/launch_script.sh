@@ -65,38 +65,42 @@ hadoop fs -cp ~/files/pg4300.txt ~/input;
 cd ~;
 
 # Save wordcount execution time of Ulysses dataset using Hadoop
-echo "Hadoop - Ulysses" >> results.txt
-{ time hadoop jar files/wc.jar WordCount ./input/ ./output; } 2>> results.txt
+echo "Hadoop - Ulysses" >> time_results.txt
+{ time hadoop jar files/wc.jar WordCount ./input/ ./output; } 2>> time_results.txt
 
 # Save wordcount execution time of Ulysses dataset using Linux
-echo "Linux - Ulysses" >> results.txt
-{ time cat files/pg4300.txt | tr ' ' '\n' | sort | uniq -c; } 2>> results.txt 
+echo "Linux - Ulysses" >> time_results.txt
+{ time cat files/pg4300.txt | tr ' ' '\n' | sort | uniq -c; } 2>> time_results.txt 
 
-# spark 
-
+# spark dependencies configuration
 apt-get update;
-
 cd ~;
-
 apt install python3-pip -y;
-
 pip install pyspark;
-
 pip install findspark;
 
-python3 -c "
+# Loop dataset folder and save wordcount execution time for each dataset using spark
+for file in $(ls datasets/) 
+do
+    # remove file extension
+    filename=$(echo $file| cut  -d'.' -f 1);
+    echo $filename >> time_results.txt;
+  
+    { time python3 -c "
 import findspark
 findspark.init()
 from pyspark.sql import SparkSession
-spark = SparkSession.builder.master('local').appName('Firstprogram').getOrCreate()
+spark = SparkSession.builder.master('local').appName('FirstProgram').getOrCreate()
 sc=spark.sparkContext
-text_file = sc.textFile('files/pg4300.txt')
+sc.setLogLevel('WARN')
+text_file = sc.textFile('datasets/${filename}')
 counts = text_file.flatMap(lambda line: line.split(' ')).map(lambda word: (word, 1)).reduceByKey(lambda x, y: x + y).collect()
-f = open('output/spark_part-r-00000', 'w')
+f = open('output/${filename}_res', 'w')
 f.write('\n'.join(map(lambda x: str(x), counts)))
 f.close()
 sc.stop()
 spark.stop()
-";
+"; } 2>> time_results.txt
+done
 
 
