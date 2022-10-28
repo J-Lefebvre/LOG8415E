@@ -66,6 +66,7 @@ cd ~;
 
 hadoop jar files/wc.jar WordCount ./input/ ./output;
 
+cat files/pg4300.txt | tr ' ' '\n' | sort | uniq -c;
 
 # spark 
 
