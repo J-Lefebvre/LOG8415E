@@ -64,9 +64,13 @@ hadoop fs -cp ~/files/pg4300.txt ~/input;
 
 cd ~;
 
-hadoop jar files/wc.jar WordCount ./input/ ./output;
+# Save wordcount execution time of Ulysses dataset using Hadoop
+echo "Hadoop - Ulysses" >> results.txt
+{ time hadoop jar files/wc.jar WordCount ./input/ ./output; } 2>> results.txt
 
-cat files/pg4300.txt | tr ' ' '\n' | sort | uniq -c;
+# Save wordcount execution time of Ulysses dataset using Linux
+echo "Linux - Ulysses" >> results.txt
+{ time cat files/pg4300.txt | tr ' ' '\n' | sort | uniq -c; } 2>> results.txt 
 
 # spark 
 
