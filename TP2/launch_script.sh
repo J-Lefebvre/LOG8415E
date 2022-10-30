@@ -48,6 +48,7 @@ source ~/.profile;
 $HADOOP_HOME/sbin/start-dfs.sh;
 
 hdfs dfs -mkdir -p input;
+hdfs dfs -mkdir -p sn_input;
 
 apt install git -y;
 
@@ -59,6 +60,11 @@ cd files;
 
 jar cf wc.jar WordCount*.class;
 
+cd social_network;
+
+hadoop com.sun.tools.javac.Main *.java;
+jar cf sn.jar *.class;
+
 cd ~;
 
 # spark dependencies configuration
@@ -68,3 +74,6 @@ pip install pyspark;
 pip install findspark;
 
 hadoop fs -cp ~/files/pg4300.txt ~/input;
+hadoop fs -cp ~/files/social_network/soc-LiveJournal1Adj.txt ~/sn_input;
+
+hadoop jar files/social_network/sn.jar PeopleYouMightKnow ./sn_input/ ./sn_output
