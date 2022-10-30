@@ -87,4 +87,4 @@ pip install findspark;
 hadoop fs -cp ~/files/pg4300.txt ~/input;
 hadoop fs -cp ~/files/social_network/soc-LiveJournal1Adj.txt ~/sn_input;
 
-hadoop jar files/social_network/sn.jar PeopleYouMightKnow ./sn_input/ ./sn_output
+#hadoop jar files/social_network/sn.jar PeopleYouMightKnow ./sn_input/ ./sn_output
