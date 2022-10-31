@@ -1,0 +1,291 @@
+Hadoop - Ulysses
+real    0m5.897s
+user    0m9.908s
+sys     0m0.459s
+
+Linux - Ulysses
+real    0m0.474s
+user    0m0.221s
+sys     0m0.276s
+
+######## SPARK ########
+buchanj-midwinter-00-t                     
+real    0m11.133s
+user    0m0.160s
+sys     0m0.020s
+
+carman-farhorizons-00-t
+real    0m10.819s
+user    0m0.170s
+sys     0m0.036s
+
+charlesworth-scene-00-t
+real    0m10.771s
+user    0m0.171s
+sys     0m0.035s
+
+cheyneyp-darkbahama-00-t
+real    0m11.010s
+user    0m0.183s
+sys     0m0.024s
+
+colby-champlain-00-t
+real    0m10.759s
+user    0m0.156s
+sys     0m0.037s
+
+delamare-bumps-00-t
+real    0m10.974s
+user    0m0.166s
+sys     0m0.044s
+
+delamare-lucy-00-t
+real    0m10.900s
+user    0m0.159s
+sys     0m0.038s
+
+delamare-myfanwy-00-t
+real    0m11.004s
+user    0m0.169s
+sys     0m0.035s
+
+delamare-penny-00-t
+real    0m10.730s
+user    0m0.158s
+sys     0m0.050s
+
+
+
+######## HADOOP ########
+buchanj-midwinter-00-t.txt
+real    0m4.907s
+user    0m7.984s
+sys     0m0.371s
+
+carman-farhorizons-00-t.txt
+real    0m3.803s
+user    0m6.644s
+sys     0m0.349s
+
+charlesworth-scene-00-t.txt
+real    0m4.784s
+user    0m7.084s
+sys     0m0.338s
+
+cheyneyp-darkbahama-00-t.txt
+real    0m4.980s
+user    0m7.567s
+sys     0m0.387s
+
+colby-champlain-00-t.txt
+real    0m3.779s
+user    0m6.788s
+sys     0m0.392s
+
+delamare-bumps-00-t.txt
+real    0m3.874s
+user    0m6.828s
+sys     0m0.361s
+
+delamare-lucy-00-t.txt
+real    0m3.673s
+user    0m6.522s
+sys     0m0.331s
+
+delamare-myfanwy-00-t.txt
+real    0m3.822s
+user    0m6.629s
+sys     0m0.375s
+
+delamare-penny-00-t.txt
+real    0m3.835s
+user    0m6.499s
+sys     0m0.374s
+
+######## SPARK ########
+buchanj-midwinter-00-t
+real    0m10.999s
+user    0m0.159s
+sys     0m0.021s
+
+carman-farhorizons-00-t
+real    0m10.949s
+user    0m0.168s
+sys     0m0.044s
+
+charlesworth-scene-00-t
+real    0m11.095s
+user    0m0.156s
+sys     0m0.047s
+
+cheyneyp-darkbahama-00-t
+real    0m11.035s
+user    0m0.176s
+sys     0m0.024s
+
+colby-champlain-00-t
+real    0m10.853s
+user    0m0.170s
+sys     0m0.020s
+
+delamare-bumps-00-t
+real    0m11.395s
+user    0m0.176s
+sys     0m0.039s
+
+delamare-lucy-00-t
+real    0m10.592s
+user    0m0.161s
+sys     0m0.034s
+
+delamare-myfanwy-00-t
+real    0m10.989s
+user    0m0.189s
+sys     0m0.023s
+
+delamare-penny-00-t
+real    0m10.641s
+user    0m0.182s
+sys     0m0.024s
+
+
+
+######## HADOOP ########
+buchanj-midwinter-00-t.txt
+real    0m4.850s
+user    0m7.412s
+sys     0m0.423s
+
+carman-farhorizons-00-t.txt
+real    0m3.808s
+user    0m6.595s
+sys     0m0.354s
+
+charlesworth-scene-00-t.txt
+real    0m4.902s
+user    0m7.229s
+sys     0m0.423s
+
+cheyneyp-darkbahama-00-t.txt
+real    0m4.869s
+user    0m7.478s
+sys     0m0.390s
+
+colby-champlain-00-t.txt
+real    0m3.858s
+user    0m6.923s
+sys     0m0.421s
+
+delamare-bumps-00-t.txt
+real    0m3.843s
+user    0m6.870s
+sys     0m0.330s
+
+delamare-lucy-00-t.txt
+real    0m3.837s
+user    0m6.859s
+sys     0m0.360s
+
+delamare-myfanwy-00-t.txt
+real    0m3.900s
+user    0m6.891s
+sys     0m0.363s
+
+delamare-penny-00-t.txt
+real    0m3.811s
+user    0m6.646s
+sys     0m0.437s
+
+######## SPARK ########
+buchanj-midwinter-00-t
+real    0m10.871s
+user    0m0.155s
+sys     0m0.026s
+
+carman-farhorizons-00-t
+real    0m10.808s
+user    0m0.147s
+sys     0m0.046s
+
+charlesworth-scene-00-t
+real    0m10.799s
+user    0m0.177s
+sys     0m0.036s
+
+cheyneyp-darkbahama-00-t 
+real    0m10.778s
+user    0m0.166s
+sys     0m0.042s
+
+colby-champlain-00-t            
+real    0m10.872s
+user    0m0.160s
+sys     0m0.036s
+
+delamare-bumps-00-t            
+real    0m10.709s
+user    0m0.171s
+sys     0m0.034s
+
+delamare-lucy-00-t
+real    0m10.575s
+user    0m0.158s
+sys     0m0.040s
+
+delamare-myfanwy-00-t                 
+real    0m10.672s
+user    0m0.182s
+sys     0m0.028s
+
+delamare-penny-00-t                                                            
+real    0m10.962s
+user    0m0.162s
+sys     0m0.040s
+
+
+
+######## HADOOP ########
+buchanj-midwinter-00-t.txt
+real    0m4.938s
+user    0m7.943s
+sys     0m0.390s
+
+carman-farhorizons-00-t.txt
+real    0m4.042s
+user    0m7.217s
+sys     0m0.385s
+
+charlesworth-scene-00-t.txt
+real    0m4.953s
+user    0m7.665s
+sys     0m0.300s
+
+cheyneyp-darkbahama-00-t.txt
+real    0m4.898s
+user    0m7.437s
+sys     0m0.392s
+
+colby-champlain-00-t.txt
+real    0m4.911s
+user    0m7.193s
+sys     0m0.441s
+
+delamare-bumps-00-t.txt
+real    0m3.800s
+user    0m6.588s
+sys     0m0.305s
+
+delamare-lucy-00-t.txt
+real    0m3.883s
+user    0m6.690s
+sys     0m0.359s
+
+delamare-myfanwy-00-t.txt
+real    0m3.904s
+user    0m6.718s
+sys     0m0.388s
+
+delamare-penny-00-t.txt
+real    0m3.793s
+user    0m6.543s
+sys     0m0.357s
