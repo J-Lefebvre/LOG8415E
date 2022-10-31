@@ -87,4 +87,19 @@ pip install findspark;
 hadoop fs -cp ~/files/pg4300.txt ~/input;
 hadoop fs -cp ~/files/social_network/soc-LiveJournal1Adj.txt ~/sn_input;
 
-#hadoop jar files/social_network/sn.jar PeopleYouMightKnow ./sn_input/ ./sn_output
+source ~/.profile;
+
+
+# to run the friend recommendation on ec2
+# hadoop jar files/social_network/sn.jar PeopleYouMightKnow ./sn_input/ ./sn_output
+
+
+# to run the friend recommendation locally
+# cd files;
+# cd social_network;
+# hadoop com.sun.tools.javac.Main *.java;
+# jar cf sn.jar *.class;
+# cd ..;
+# cd ..;
+# rm -r sn_output;
+# hadoop jar ./files/social_network/sn.jar PeopleYouMightKnow ./sn_input/ ./sn_output
