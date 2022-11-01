@@ -4,13 +4,28 @@ import time
 
 
 class EC2Creator:
+    """Instance creator used to configure and spin up an Amazon EC2 instance."""
     def __init__(self):
+        """Constructor"""
         self.client = boto3.client('ec2')
         self.open_http_port()
         self.instance_id = None
 
-    # Runs a request to create an instance from parameters and saves their ids
+
     def create_instance(self, availability_zone, instance_type):
+        """Run a request to create an instance from parameters and saves their id.
+        
+        Parameters
+        ----------
+        availability_zone : string
+                            The availability zone of the instance
+        instance_type :     string
+                            The instance type
+
+        Returns
+        -------
+        instance_id : associated id of created ec2 instance
+        """
         response = self.client.run_instances(
             BlockDeviceMappings=[
                 {
@@ -48,27 +63,28 @@ class EC2Creator:
             # Script to launch on instance startup
             UserData=open('launch_script.sh').read()
         )
-        print(response["Instances"][0]["InstanceId"])
+        self.instance_id = response["Instances"][0]["InstanceId"]
         time.sleep(5)
-        return response["Instances"][0]["InstanceId"]
-
-    # Main function that creates the instance
-    def create_m4_instance(self):
-        self.instance_id = self.create_instance(constant.US_EAST_1A, constant.M4_LARGE)
         return self.instance_id
 
-    # Termination function that terminates the running instance
+
+    
     def terminate_instance(self):
+        """Shut down the created instance."""
+
+        # Termination function that terminates the running instance
         self.client.terminate_instances(InstanceIds=[self.instance_id])
 
-    # If not done already, opens the port 80 on the default security group so that
-    #  the ports of all instances and they are exposed by default on creation
+    
     def open_http_port(self):
+        """Open the port 80 on the default security group."""
+
         # Gets all open ports on the default group
         opened_ports = [i_protocol.get('FromPort') for i_protocol in
                         self.client.describe_security_groups(GroupNames=[constant.DEFAULT_SECURITY_GROUP_NAME])
                         ['SecurityGroups'][0]['IpPermissions']]
-        # if HTTP port not already open, open it
+        # If not done already, opens the port 80 on the default security group so that
+        # the ports of all instances are exposed by default on creation
         if constant.HTTP_PORT not in opened_ports:
             self.client.authorize_security_group_ingress(
                 GroupName=constant.DEFAULT_SECURITY_GROUP_NAME,
