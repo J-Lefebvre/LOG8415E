@@ -8,7 +8,7 @@ class EC2Creator:
     def __init__(self):
         """Constructor"""
         self.client = boto3.client('ec2')
-        self.open_http_port()
+        self.open_ssh_port()
         self.instance_id = None
 
 
@@ -76,20 +76,20 @@ class EC2Creator:
         self.client.terminate_instances(InstanceIds=[self.instance_id])
 
     
-    def open_http_port(self):
-        """Open the port 80 on the default security group."""
+    def open_ssh_port(self):
+        """Open the port 22 on the default security group."""
 
         # Gets all open ports on the default group
         opened_ports = [i_protocol.get('FromPort') for i_protocol in
                         self.client.describe_security_groups(GroupNames=[constant.DEFAULT_SECURITY_GROUP_NAME])
                         ['SecurityGroups'][0]['IpPermissions']]
-        # If not done already, opens the port 80 on the default security group so that
+        # If not done already, opens the port 22 on the default security group so that
         # the ports of all instances are exposed by default on creation
-        if constant.HTTP_PORT not in opened_ports:
+        if constant.SSH_PORT not in opened_ports:
             self.client.authorize_security_group_ingress(
                 GroupName=constant.DEFAULT_SECURITY_GROUP_NAME,
                 CidrIp=constant.CIDR_IP,
-                FromPort=constant.HTTP_PORT,
-                ToPort=constant.HTTP_PORT,
+                FromPort=constant.SSH_PORT,
+                ToPort=constant.SSH_PORT,
                 IpProtocol=constant.IP_PROTOCOL
             )
