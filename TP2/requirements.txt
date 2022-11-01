@@ -1,6 +1,0 @@
-boto3
-botocore
-matplotlib
-numpy
-pandas
-requests
